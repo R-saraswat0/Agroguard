@@ -6,6 +6,7 @@ import BackgroundSvg from "../images/117.svg";
 import "../../src/index.css";
 import WelcomeOverlay from "../components/WelcomeOverlay";
 import API_BASE_URL from '../config/api';
+import { AUTH_DISABLED } from "../config/auth";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,25 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    if (AUTH_DISABLED) {
+      const mockUser = {
+        token: "auth-disabled-token",
+        userId: "auth-disabled-user",
+        username: formData.email?.split("@")[0] || "guest",
+        role: "farmer"
+      };
+      localStorage.setItem('authToken', mockUser.token);
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      setUserData({ name: mockUser.username, role: mockUser.role });
+      setShowWelcome(true);
+      setTimeout(() => {
+        setShowWelcome(false);
+        navigate('/loghome');
+      }, 1000);
+      setLoading(false);
+      return;
+    }
 
     try {
       // Update the URL to match your backend login endpoint

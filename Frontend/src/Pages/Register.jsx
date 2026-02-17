@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';//+
 import { parsePhoneNumber } from 'libphonenumber-js'; // Import the parsePhoneNumber function
 import leftLeaf from '../images/p4.png';
 import rightLeaf from '../images/p4.png';
+import { AUTH_DISABLED } from "../config/auth";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -66,6 +67,27 @@ function Register() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    if (AUTH_DISABLED) {
+      const mockUser = {
+        token: "auth-disabled-token",
+        userId: "auth-disabled-user",
+        username: formData.username || "guest",
+        role: formData.role || "farmer"
+      };
+      localStorage.setItem("authToken", mockUser.token);
+      localStorage.setItem("user", JSON.stringify(mockUser));
+      toast.success("Authentication is temporarily disabled. Signed in as demo user.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true
+      });
+      setTimeout(() => {
+        window.location.href = "/loghome";
+      }, 800);
+      setLoading(false);
+      return;
+    }
 
     // Password match validation
     if (formData.password !== formData.confirmPassword) {

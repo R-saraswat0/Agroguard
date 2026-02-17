@@ -2,7 +2,21 @@ import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config.js';
 import User from '../Models/User.js';
 
+// Temporary auth bypass.
+// Set DISABLE_AUTH=false to re-enable token/role enforcement.
+const AUTH_DISABLED = process.env.DISABLE_AUTH !== 'false';
+
 const authenticateToken = async (req, res, next) => {
+    if (AUTH_DISABLED) {
+        req.user = {
+            _id: 'auth-disabled-user',
+            id: 'auth-disabled-user',
+            username: 'demo-user',
+            role: 'admin'
+        };
+        return next();
+    }
+
     try {
         const token = req.headers.authorization;
         
@@ -37,6 +51,10 @@ const authenticateToken = async (req, res, next) => {
 // Middleware to restrict access based on roles
 export const authorize = (...roles) => {
     return (req, res, next) => {
+        if (AUTH_DISABLED) {
+            return next();
+        }
+
         if (!req.user) {
             return res.status(401).json({ message: 'Not authorized, no user found' });
         }
