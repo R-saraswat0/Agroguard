@@ -98,10 +98,11 @@ function Register() {
         userData
       );
 
-      // Retrieve and store JWT token
-      const token = response.data.token;
-      localStorage.setItem("authToken", token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      // Store auth data if backend returns token payload
+      if (response.data?.token) {
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
 
       // Show success notification using toast
       toast.success("Registration successful! You are now logged in.", {
@@ -133,7 +134,7 @@ function Register() {
 
       // Redirect after successful registration
       setTimeout(() => {
-        window.location.href = "/loghome";
+        window.location.href = response.data?.token ? "/loghome" : "/login";
       }, 1000);
     } catch (err) {
       // Error response handling
