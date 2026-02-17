@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config/api';
 
 const MyInquiriez = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -24,12 +25,12 @@ const MyInquiriez = () => {
       }
 
       if (showAlerts) {
-        const res = await axios.get("http://localhost:5557/alerts", {
+        const res = await axios.get(`${API_BASE_URL}/alerts", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAlerts(res.data);
       } else {
-        const res = await axios.get("http://localhost:5557/farmer", {
+        const res = await axios.get(`${API_BASE_URL}/farmer", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setInquiries(res.data.data || []);

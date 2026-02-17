@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn, FaRedo } from 'react-icons/fa';
 import axios from 'axios';
 import LogingNavBar from '../components/LogingNavBar';
+import API_BASE_URL from '../config/api';
 
 const HomeAfterLogin = () => {
   const scanRef = useRef(null);
@@ -20,7 +21,7 @@ const HomeAfterLogin = () => {
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const response = await axios.get('http://localhost:5557/materials');
+        const response = await axios.get(`${API_BASE_URL}/materials');
         setMaterials(response.data.data);
       } catch (error) {
         console.error('Error fetching materials:', error);

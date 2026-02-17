@@ -5,6 +5,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import BackgroundSvg from "../images/117.svg";
 import "../../src/index.css";
 import WelcomeOverlay from "../components/WelcomeOverlay";
+import API_BASE_URL from '../config/api';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ const Login = () => {
 
     try {
       // Update the URL to match your backend login endpoint
-      const response = await axios.post('http://localhost:5557/api/auth/login', formData);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
       
       if (response.data.token) {
         localStorage.setItem('user', JSON.stringify(response.data));

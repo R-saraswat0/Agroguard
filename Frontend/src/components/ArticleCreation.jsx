@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaImage, FaVideo, FaLink, FaUpload, FaTrash, FaBold, FaItalic, FaUnderline, FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 const ArticleCreation = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('');
@@ -134,7 +135,7 @@ const ArticleCreation = ({ isOpen, onClose }) => {
     };
   
     try {
-      const response = await axios.post('http://localhost:5557/api/articles', articleData, {
+      const response = await axios.post(`${API_BASE_URL}/api/articles', articleData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percentCompleted);

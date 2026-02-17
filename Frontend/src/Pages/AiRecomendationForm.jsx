@@ -7,6 +7,7 @@ import { BiLoaderCircle } from "react-icons/bi";
 import { FaLeaf, FaVirus, FaThermometerHalf, FaCloudRain, FaHistory, FaShieldAlt, FaSeedling, FaDownload  } from 'react-icons/fa';
 import { FaRedo } from 'react-icons/fa';
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from "@react-pdf/renderer";
+import API_BASE_URL from '../config/api';
 
 // PDF styles
 const styles = StyleSheet.create({
@@ -233,7 +234,7 @@ const AiTreatmentForm = () => {
     
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5557/ai/treatment", formData);
+      const response = await axios.post(`${API_BASE_URL}/ai/treatment", formData);
       setTreatment(response.data.treatment);
       enqueueSnackbar("Treatment recommendation generated successfully!", { variant: "success" });
       setLoading(false);

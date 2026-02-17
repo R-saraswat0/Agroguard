@@ -8,6 +8,7 @@ import { FaSave, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import ProgressBar from "../components/ProgressBar";
 import SupplierSidebar from "../components/SupplierSidebar";
 import ManagerNavBar from "../components/ManagerNavBar";
+import API_BASE_URL from '../config/api';
 
 const CreateMaterial = () => {
   const [materialName, setMaterialName] = useState("");
@@ -142,7 +143,7 @@ const CreateMaterial = () => {
     };
     setLoading(true);
     axios
-      .post("http://localhost:5557/materials", data)
+      .post(`${API_BASE_URL}/materials", data)
       .then(() => {
         setLoading(false);
         enqueueSnackbar("Material Created successfully", {

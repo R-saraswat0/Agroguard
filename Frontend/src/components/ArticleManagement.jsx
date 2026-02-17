@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import API_BASE_URL from '../config/api';
 import { 
   FaTimes, FaEdit, FaTrash, FaEye, FaArrowLeft, FaSearch, 
   FaBold, FaItalic, FaUnderline, FaCode, FaListUl, FaListOl, FaQuoteRight 
@@ -110,7 +111,7 @@ const ArticleManagement = ({ isOpen, onClose }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5557/api/articles');
+      const response = await axios.get(`${API_BASE_URL}/api/articles');
       console.log('Fetch response:', response);
 
       if (response.data && Array.isArray(response.data)) {

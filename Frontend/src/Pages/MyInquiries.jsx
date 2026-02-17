@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config/api';
 import {
   FaEdit,
   FaTrash,
@@ -62,7 +63,7 @@ const MyInquiries = () => {
         throw new Error("No user data found");
       }
 
-      const response = await axios.get("http://localhost:5557/farmer", {
+      const response = await axios.get(`${API_BASE_URL}/farmer", {
         headers: {
           Authorization: `Bearer ${userData.token}`,
         },

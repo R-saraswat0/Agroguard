@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useSnackbar } from 'notistack';
+import API_BASE_URL from '../config/api';
 import {
   FaUser,
   FaEnvelope,
@@ -36,7 +37,7 @@ const UserProfile = () => {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get('http://localhost:5557/api/test/profile', {
+        const response = await axios.get(`${API_BASE_URL}/api/test/profile', {
           headers: { Authorization: `Bearer ${userData.token}` }
         });
         setUserProfile(response.data);

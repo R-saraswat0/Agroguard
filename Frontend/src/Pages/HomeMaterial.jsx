@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import EditMaterial from "./EditMaterial";
 import ManagerNavBar from "../components/ManagerNavBar";
+import API_BASE_URL from '../config/api';
 
 const HomeMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -26,7 +27,7 @@ const HomeMaterial = () => {
   const fetchMaterials = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5557/materials")
+      .get(`${API_BASE_URL}/materials")
       .then((response) => {
         setMaterials(response.data.data);
         setLoading(false);

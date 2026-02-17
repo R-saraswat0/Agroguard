@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import API_BASE_URL from '../config/api';
 
 const DeleteSubmittedForm = ({inquiryId, onClose, onDeleteSuccess}) => {
   const [formData, setFormData] = useState(null);

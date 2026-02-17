@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import API_BASE_URL from '../config/api';
 
 export const UpdateSubmittedForm = ({ inquiryId, onClose, onUpdateSuccess }) => {
   const [fullname, setFullname] = useState("");

@@ -8,6 +8,7 @@ import UserTopNavbar from "../components/UserTopNavbar";
 import AgriStoreHeader from "../components/AgriStoreHeader";
 import MaterialDetailsModal from "../components/MaterialDetailsModal";
 import Cart from "../components/Cart";
+import API_BASE_URL from '../config/api';
 
 const BuyMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -25,7 +26,7 @@ const BuyMaterial = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:5557/materials")
+      .get(`${API_BASE_URL}/materials")
       .then((response) => {
         setMaterials(response.data.data);
         setLoading(false);

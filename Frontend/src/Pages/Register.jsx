@@ -1,3 +1,4 @@
+import API_BASE_URL from '../config/api';
 
 import React, { useState } from "react";
 import axios from "axios";
@@ -93,7 +94,7 @@ function Register() {
     try {
       // Send registration request
       const response = await axios.post(
-        "http://localhost:5557/api/auth/register",
+        `${API_BASE_URL}/api/auth/register`,
         userData
       );
 

@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Circle, Popup, useMap } from "react-leaflet";
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from '../config/api';
 
 // Reset helper component
 const ResetMapView = ({ trigger, coords, zoom }) => {
@@ -45,7 +46,7 @@ const BubbleMap = () => {
         const token = userData?.token;
         if (!token) return;
 
-        const response = await axios.get("http://localhost:5557/farmer/all", {
+        const response = await axios.get(`${API_BASE_URL}/farmer/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

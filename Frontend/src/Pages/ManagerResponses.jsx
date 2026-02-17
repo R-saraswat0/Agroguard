@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FaEye, FaTimes, FaCalendar, FaLeaf, FaVirus, FaFileAlt, FaDownload } from 'react-icons/fa';
 import axios from 'axios';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import API_BASE_URL from '../config/api';
 
 // PDF styles
 const styles = StyleSheet.create({
@@ -127,7 +128,7 @@ const ManagerResponses = () => {
         return;
       }
 
-      const res = await axios.get('http://localhost:5557/farmer', {
+      const res = await axios.get(`${API_BASE_URL}/farmer', {
         headers: { Authorization: `Bearer ${token}` },
       });
       

@@ -3,6 +3,7 @@ import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ReportPDF from "../components/ReportPDF";
 import { FaDownload } from "react-icons/fa";
+import API_BASE_URL from '../config/api';
 
 const ReportsPage = () => {
   const [stats, setStats] = useState(null);
@@ -18,7 +19,7 @@ const ReportsPage = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:5557/manager/reports", {
+        const response = await axios.get(`${API_BASE_URL}/manager/reports", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

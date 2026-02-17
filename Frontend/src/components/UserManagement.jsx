@@ -6,9 +6,10 @@ import defaultAvatar from '../assets/default-avatar.jpg';
 import AdminSidebar from './AdminSidebar';
 import ManagerTopNavBar from '../components/ManagerNavBar';
 import { ReportService } from '../services/reportService';
+import API_BASE_URL from '../config/api';
 
 
-const API_BASE_URL = 'http://localhost:5557/api';
+const API_BASE_URL = `${API_BASE_URL}/api';
 
 const roleColors = {
   'farmer': 'bg-green-100 text-green-800',

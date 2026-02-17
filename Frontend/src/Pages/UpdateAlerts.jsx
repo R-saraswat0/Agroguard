@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import LogingNavBar from '../components/MNavigationBar ';
+import API_BASE_URL from '../config/api';
 
 const severityLevels = ["Low", "Medium", "High", "Critical"];
 const alertsPerPage = 4;
@@ -27,7 +28,7 @@ const UpdateAlerts = () => {
 
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5557/alerts", {
+      const res = await axios.get(`${API_BASE_URL}/alerts", {
         headers: { Authorization: `Bearer ${userData.token}` },
       });
 

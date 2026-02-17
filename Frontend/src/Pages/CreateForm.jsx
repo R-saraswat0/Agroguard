@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { useDropzone } from "react-dropzone";
 import { useCallback, useEffect } from "react";
+import API_BASE_URL from '../config/api';
 
 export const CreateForm = ({ onClose, onSubmitSuccess }) => {
   const [fullname, setFullname] = useState("");
@@ -71,7 +72,7 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
 
     // Send POST request with Authorization header
     axios
-      .post("http://localhost:5557/farmer", data, {
+      .post(`${API_BASE_URL}/farmer", data, {
         headers: {
           Authorization: `Bearer ${userData.token}`, // Include the token in the headers
         },

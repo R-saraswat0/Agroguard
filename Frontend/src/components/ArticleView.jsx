@@ -3,8 +3,9 @@ import axios from 'axios';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark, FaSearch, FaFilter, FaSpinner, FaSortAmountDown, FaCalendarAlt } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import UserTopNavbar from './UserTopNavbar';
+import API_BASE_URL from '../config/api';
 
-const API_BASE_URL = 'http://localhost:5557';
+const API_BASE_URL = `${API_BASE_URL}';
 
 const ArticleView = () => {
   const [articles, setArticles] = useState([]);

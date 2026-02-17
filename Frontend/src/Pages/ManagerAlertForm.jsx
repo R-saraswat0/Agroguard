@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from '../config/api';
 
 
 const ManagerAlertForm = () => {
@@ -113,7 +114,7 @@ const ManagerAlertForm = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5557/alerts", data, {
+      await axios.post(`${API_BASE_URL}/alerts", data, {
         headers: { Authorization: `Bearer ${userData.token}` },
       });
       enqueueSnackbar("Alert created successfully!", { variant: "success" });

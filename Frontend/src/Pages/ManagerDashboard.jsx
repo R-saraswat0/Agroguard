@@ -3,6 +3,7 @@ import axios from "axios";
 import BubbleMap from "../components/BubbleMap";
 import ReportsTab from "../components/ReportsTab";
 import LogingNavBar from '../components/MNavigationBar ';
+import API_BASE_URL from '../config/api';
 
 import {
   FaBars,
@@ -43,7 +44,7 @@ const ManagerDashboard = () => {
 
   const fetchForms = async () => {
     try {
-      const response = await axios.get("http://localhost:5557/manager/forms", {
+      const response = await axios.get(`${API_BASE_URL}/manager/forms", {
         headers: { Authorization: `Bearer ${token}` },
         params: { status: statusFilter, search: searchQuery, date: searchDate },
       });

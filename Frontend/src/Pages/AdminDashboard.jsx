@@ -9,6 +9,7 @@ import ArticleCreation from '../components/ArticleCreation';
 import ArticleManagement from '../components/ArticleManagement';
 import ManagerTopNavBar from '../components/ManagerNavBar';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ const AdminDashboard = () => {
   // Fetch recent activities
   const fetchRecentActivities = async () => {
     try {
-      const response = await axios.get('http://localhost:5557/api/activities/recent');
+      const response = await axios.get(`${API_BASE_URL}/api/activities/recent');
       setRecentActivities(response.data);
     } catch (error) {
       console.error('Error fetching recent activities:', error);
@@ -86,7 +87,7 @@ const AdminDashboard = () => {
   //fetch user count
   const fetchUserCount = async () => {
     try {
-      const response = await axios.get('http://localhost:5557/api/users/count');
+      const response = await axios.get(`${API_BASE_URL}/api/users/count');
       setUserCount(response.data.count);
     } catch (error) {
       console.error('Error fetching user count:', error);
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
   //Fetch Article Count
   const fetchArticleCount = async () => {
     try {
-      const response = await axios.get('http://localhost:5557/api/articles/count');
+      const response = await axios.get(`${API_BASE_URL}/api/articles/count');
       setArticleCount(response.data.count);
     } catch (error) {
       console.error('Error fetching article count:', error);
@@ -112,7 +113,7 @@ const AdminDashboard = () => {
   //fetch user registration data for chart
   const fetchUserRegistrationData = async () => {
     try {
-      const response = await axios.get('http://localhost:5557/api/users/registration-stats');
+      const response = await axios.get(`${API_BASE_URL}/api/users/registration-stats');
       console.log('User registration data:', response.data);
       
       if (response.data && Array.isArray(response.data.labels) && Array.isArray(response.data.values)) {
