@@ -5,6 +5,7 @@ dotenv.config();
 
 const router = express.Router();
 const apiKey = process.env.OPENAI_API_KEY;
+const visionModel = process.env.OPENAI_VISION_MODEL || "gpt-4o-mini";
 
 if (!apiKey) {
   console.error("Error: OPENAI_API_KEY is not defined in .env");
@@ -84,6 +85,75 @@ router.post("/treatment", async (req, res) => {
   } catch (error) {
     console.error("Error generating AI treatment:", error);
     res.status(500).json({ message: "Error generating treatment recommendation", error: error.message });
+  }
+});
+
+router.post("/scan-disease", async (req, res) => {
+  const { base64Image, mimeType } = req.body;
+
+  try {
+    if (!apiKey) {
+      return res.status(500).json({ message: "OPENAI_API_KEY is not configured" });
+    }
+
+    if (!base64Image) {
+      return res.status(400).json({ message: "base64Image is required" });
+    }
+
+    const safeMimeType = mimeType || "image/jpeg";
+    const imageDataUrl = `data:${safeMimeType};base64,${base64Image}`;
+
+    const prompt = `Analyze this plant image and return strict JSON only with this exact schema:
+{
+  "disease_name": "<detected disease or 'Unknown'>",
+  "confidence": "<Low|Medium|High>",
+  "explanation": "<short explanation>",
+  "recommended_action": "<concise actionable next step>"
+}`;
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: visionModel,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a plant pathology assistant. Return only valid JSON with the exact requested keys.",
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: imageDataUrl } },
+            ],
+          },
+        ],
+        temperature: 0.2,
+        max_tokens: 300,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || "OpenAI API error");
+    }
+
+    let aiResponse = data.choices?.[0]?.message?.content?.trim() || "{}";
+    aiResponse = aiResponse.replace(/```json|```/g, "").trim();
+    const parsedResponse = JSON.parse(aiResponse);
+
+    return res.json({ result: parsedResponse });
+  } catch (error) {
+    console.error("Error scanning disease image:", error);
+    return res
+      .status(500)
+      .json({ message: "Error analyzing plant image", error: error.message });
   }
 });
 

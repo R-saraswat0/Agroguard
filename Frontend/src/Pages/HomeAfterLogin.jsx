@@ -2,19 +2,19 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn, FaRedo } from 'react-icons/fa';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import LogingNavBar from '../components/LogingNavBar';
 import API_BASE_URL from '../config/api';
 
-const DISEASE_API_URL = import.meta.env.VITE_DISEASE_API_URL || 'http://localhost:5000';
-
 const HomeAfterLogin = () => {
+  const navigate = useNavigate();
   const scanRef = useRef(null);
   const [showScanModal, setShowScanModal] = useState(false);
   const [materials, setMaterials] = useState([]);
   const [image, setImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
+  const [predictionAdvice, setPredictionAdvice] = useState('');
   const [loading, setLoading] = useState(false);
-  const [scanCount, setScanCount] = useState(0);
 
   const scrollToScan = () => {
     scanRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -35,61 +35,55 @@ const HomeAfterLogin = () => {
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
     setPrediction(null);
+    setPredictionAdvice('');
   };
+
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        try {
+          const base64 = reader.result.split(',')[1];
+          resolve(base64);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = reject;
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!image) return;
 
     setLoading(true);
-    if (scanCount === 0) {
-      // First scan: local model
-      const formData = new FormData();
-      formData.append('file', image);
-      try {
-        const response = await axios.post(
-          `${DISEASE_API_URL}/predict`,
-          formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
-        );
-        setPrediction(response.data.predicted_label);
-        setScanCount(1);
-      } catch (error) {
-        console.error('Error uploading image to local model:', error);
-        setPrediction('Error');
-      }
-    } else {
-      // Retry: external API
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      reader.onloadend = async () => {
-        const base64Image = reader.result.split(',')[1];
-        try {
-          const response = await axios.post(
-            'https://crop.kindwise.com/api/v1/identification',
-            { images: [base64Image] },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Api-Key': 'w9dI5ltIik0SAYqj4soymqYV2zMsiY6VsqxnpMhlXWS1OjcSSj'
-              }
-            }
-          );
-          const topSuggestion = response.data.result.disease.suggestions[0];
-          setPrediction(topSuggestion.name);
-        } catch (error) {
-          console.error('Retry API failed:', error);
-          setPrediction('Error');
-        }
-      };
+    try {
+      const base64Image = await fileToBase64(image);
+      const response = await axios.post(`${API_BASE_URL}/ai/scan-disease`, {
+        base64Image,
+        mimeType: image.type || 'image/jpeg',
+      });
+
+      const result = response.data?.result;
+      const disease = result?.disease_name || 'Unknown';
+      const confidence = result?.confidence ? ` (${result.confidence})` : '';
+      setPrediction(`${disease}${confidence}`);
+      setPredictionAdvice(result?.recommended_action || result?.explanation || '');
+      setShowScanModal(false);
+    } catch (error) {
+      console.error('Disease scan failed:', error);
+      setPrediction('Error');
+      setPredictionAdvice('Unable to analyze this image now. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-    setShowScanModal(false);
   };
 
   const handleRetry = () => {
     setImage(null);
     setPrediction(null);
+    setPredictionAdvice('');
     setShowScanModal(true);
   };
 
@@ -186,11 +180,26 @@ const HomeAfterLogin = () => {
 
           {/* Display AI prediction result here */}
           {prediction && (
-            <div className="text-center mt-4 text-2xl text-red-600 font-semibold">
-              Predicted Disease: {prediction}
-              <button onClick={handleRetry} className="ml-4 text-blue-500 hover:underline">
+            <div className="text-center mt-4">
+              <p className="text-2xl text-red-600 font-semibold">
+                Predicted Disease: {prediction}
+              </p>
+              {predictionAdvice && (
+                <p className="mt-2 text-gray-700 max-w-2xl mx-auto">{predictionAdvice}</p>
+              )}
+              <button onClick={handleRetry} className="mt-3 text-blue-500 hover:underline">
                 <FaRedo className="inline mr-1" /> Retry
               </button>
+            </div>
+          )}
+          {prediction === null && (
+            <div className="text-center mt-4 text-gray-500">
+              Upload a clear leaf image to get GPT-based disease analysis.
+            </div>
+          )}
+          {prediction === 'Error' && (
+            <div className="text-center mt-4 text-red-600 font-medium">
+              Could not fetch analysis from AI service.
             </div>
           )}
 
@@ -253,6 +262,7 @@ const HomeAfterLogin = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/materials/buy')}
               className="bg-transparent border-2 border-green-600 text-green-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-600 hover:text-white transition duration-300"
             >
               Explore All Medicines
@@ -281,7 +291,7 @@ const HomeAfterLogin = () => {
               <h3 className="text-2xl font-bold mb-4 text-green-600">Scan Your Plant</h3>
               <p className="text-gray-600 mb-6">Choose a method to upload your plant image for analysis</p>
               <form onSubmit={handleSubmit} className="flex flex-col items-center">
-                <input type="file" onChange={handleImageChange} className="mb-4" />
+                <input type="file" accept="image/*" onChange={handleImageChange} className="mb-4" />
                 {image && (
                   <img
                     src={URL.createObjectURL(image)}
@@ -293,7 +303,7 @@ const HomeAfterLogin = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !image}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center mb-4"
                 >
                   {loading ? 'Processing...' : <><FaCloudUploadAlt className="mr-2" /> Upload Image</>}
