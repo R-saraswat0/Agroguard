@@ -11,6 +11,7 @@ import ManagerNavBar from "../components/ManagerNavBar";
 import API_BASE_URL from '../config/api';
 
 const CreateMaterial = () => {
+  const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
   const [materialName, setMaterialName] = useState("");
   const [category, setCategory] = useState("");
   const [diseaseUsage, setDiseaseUsage] = useState([]);
@@ -52,7 +53,8 @@ const CreateMaterial = () => {
 
   const handlePriceChange = (e) => {
     const value = e.target.value;
-    if (value < 0) {
+    const numericValue = Number(value);
+    if (numericValue < 0) {
       setErrors((prev) => ({
         ...prev,
         pricePerUnit: "Price must be a positive number",
@@ -69,7 +71,7 @@ const CreateMaterial = () => {
   const handleSupplierContactChange = (e) => {
     const value = e.target.value;
     const phoneRegex = /^(07|08|01)\d{8}$/;
-    if (!phoneRegex.test(value)) {
+    if (value && !phoneRegex.test(value)) {
       setErrors((prev) => ({
         ...prev,
         supplierContact:
@@ -88,9 +90,8 @@ const CreateMaterial = () => {
     (acceptedFiles, fileRejections) => {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
-        if (file.size > 30720) {
-          // 30KB = 30 * 1024 bytes
-          enqueueSnackbar("Image size should not exceed 30KB", {
+        if (file.size > MAX_IMAGE_SIZE_BYTES) {
+          enqueueSnackbar("Image size should not exceed 2MB", {
             variant: "warning",
           });
           return;
@@ -105,7 +106,7 @@ const CreateMaterial = () => {
       if (fileRejections.length > 0) {
         fileRejections.forEach((rejection) => {
           if (rejection.errors[0].code === "file-too-large") {
-            enqueueSnackbar(`Max size is 30KB.`, { variant: "error" });
+            enqueueSnackbar(`Max size is 2MB.`, { variant: "error" });
           }
         });
       }
@@ -115,8 +116,8 @@ const CreateMaterial = () => {
 
   const { getRootProps, getInputProps, fileRejections } = useDropzone({
     onDrop,
-    accept: "image/*",
-    maxSize: 30720, // 30KB
+    accept: { "image/*": [] },
+    maxSize: MAX_IMAGE_SIZE_BYTES,
   });
 
   useEffect(() => {
@@ -153,9 +154,33 @@ const CreateMaterial = () => {
       })
       .catch((error) => {
         setLoading(false);
-        enqueueSnackbar("Error", { variant: "error" });
+        const message =
+          error.response?.data?.message || "Failed to create material.";
+        enqueueSnackbar(message, { variant: "error" });
         console.log(error);
       });
+  };
+
+  const canProceedCurrentStep = () => {
+    if (currentStep === 1) {
+      return (
+        materialName.trim() &&
+        category &&
+        unitType &&
+        pricePerUnit &&
+        !errors.pricePerUnit
+      );
+    }
+    if (currentStep === 2) {
+      return supplierName.trim() && supplierContact && !errors.supplierContact;
+    }
+    if (currentStep === 3) {
+      return usageInstructions.trim() && diseaseUsage.length > 0;
+    }
+    if (currentStep === 4) {
+      return !!image;
+    }
+    return true;
   };
 
   const isFormValid = () => {
@@ -405,7 +430,7 @@ const CreateMaterial = () => {
                     <p className="pl-1">or drag and drop</p>
                   </div>
                   <p className="text-xs text-gray-500">
-                    PNG, JPG, JPEG up to 20KB
+                    PNG, JPG, JPEG up to 2MB
                   </p>
                 </div>
               </div>
@@ -477,7 +502,8 @@ const CreateMaterial = () => {
                 type="submit"
                 disabled={currentStep === totalSteps && !isFormValid()}
                 className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  currentStep === totalSteps && !isFormValid()
+                  ((currentStep === totalSteps && !isFormValid()) ||
+                    (currentStep < totalSteps && !canProceedCurrentStep()))
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 }`}

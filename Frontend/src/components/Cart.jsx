@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaTimes,
   FaPlus,
@@ -13,7 +13,6 @@ import {
   View,
   Document,
   StyleSheet,
-  PDFDownloadLink,
   pdf,
 } from "@react-pdf/renderer";
 
@@ -127,12 +126,12 @@ const MyDocument = ({ cart, materials, totalPrice, customerInfo }) => (
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>
-                  Rs.{material.pricePerUnit.toFixed(2)}
+                  Rs.{Number(material.pricePerUnit || 0).toFixed(2)}
                 </Text>
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>
-                  Rs.{(material.pricePerUnit * quantity).toFixed(2)}
+                  Rs.{(Number(material.pricePerUnit || 0) * quantity).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -166,9 +165,14 @@ const Cart = ({
     phone: "",
   });
   
-  const formRef = useRef(null);
   const [confirmed, setConfirmed] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+
+  useEffect(() => {
+    if (!showCart || Object.keys(cart).length === 0) {
+      setConfirmed(false);
+    }
+  }, [showCart, cart]);
 
  // Handle form input changes
 const handleInputChange = (e) => {
@@ -290,7 +294,7 @@ const handleConfirm = () => {
                         <FaPlus />
                       </button>
                       <span className="ml-4 text-sm font-bold">
-                        Rs.{(material.pricePerUnit * quantity).toFixed(2)}
+                        Rs.{(Number(material.pricePerUnit || 0) * quantity).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -308,7 +312,6 @@ const handleConfirm = () => {
                   Customer Information
                 </h3>
                 <form
-                  ref={formRef}
                   className="space-y-4"
                   onSubmit={(e) => e.preventDefault()}
                 >

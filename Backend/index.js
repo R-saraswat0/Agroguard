@@ -18,7 +18,8 @@ const app = express();
 
 
 // Middleware for parsing request body
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Middleware for handling CORS policy
 const allowedOrigins = [

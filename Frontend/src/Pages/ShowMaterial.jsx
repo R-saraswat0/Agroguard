@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const ShowMaterial = ({ id, onClose }) => {
   const [material, setMaterial] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [showUsageModal, setShowUsageModal] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -30,21 +31,38 @@ const ShowMaterial = ({ id, onClose }) => {
   );
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
     axios
       .get(`${API_BASE_URL}/materials/${id}`)
       .then((response) => {
-        setMaterial(response.data);
-        setLoading(false);
+        if (!isMounted) return;
+        setMaterial(response.data || null);
+        setError("");
       })
       .catch((error) => {
+        if (!isMounted) return;
         console.log(error);
-        setLoading(false);
+        setError("Failed to load material details.");
         enqueueSnackbar("Error fetching material details", { variant: "error" });
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, enqueueSnackbar]);
 
   if (loading) return <Spinner />;
+  if (error) {
+    return (
+      <div className="rounded-md border border-red-200 bg-red-50 p-4 text-red-700">
+        {error}
+      </div>
+    );
+  }
   if (!material) return <div>Material not found</div>;
 
   return (
@@ -59,7 +77,7 @@ const ShowMaterial = ({ id, onClose }) => {
         <div className="md:w-1/2 relative overflow-hidden">
           <img
             className="h-64 w-full object-cover md:h-full"
-            src={material.image}
+            src={material.image || "https://via.placeholder.com/300x200?text=No+Image"}
             alt={material.materialName}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
@@ -79,7 +97,7 @@ const ShowMaterial = ({ id, onClose }) => {
               <div className="flex items-center mb-4">
                 <FaDollarSign className="text-yellow-500 w-8 h-8 mr-2" />
                 <p className="text-2xl font-bold text-black-600">
-                  Rs.{material.pricePerUnit.toFixed(2)}
+                  Rs.{Number(material.pricePerUnit || 0).toFixed(2)}
                 </p>
               </div>
             </div>
@@ -88,18 +106,22 @@ const ShowMaterial = ({ id, onClose }) => {
               <InfoItem
                 icon={<FaLeaf className="text-green-500 w-6 h-6" />}
                 label="Disease Usage"
-                value={material.diseaseUsage.join(", ")}
+                value={
+                  Array.isArray(material.diseaseUsage) && material.diseaseUsage.length > 0
+                    ? material.diseaseUsage.join(", ")
+                    : "Not specified"
+                }
               />
   
               <InfoItem
                 icon={<FaUser className="text-indigo-500 w-5 h-5" />}
                 label="Supplier Name"
-                value={material.supplierName}
+                value={material.supplierName || "Not specified"}
               />
               <InfoItem
                 icon={<FaInfoCircle className="text-blue-500 w-5 h-5" />}
                 label="Contact Info"
-                value={material.supplierContact}
+                value={material.supplierContact || "Not specified"}
               />
             </div>
   
@@ -137,7 +159,7 @@ const ShowMaterial = ({ id, onClose }) => {
                 Usage Instructions
               </h3>
               <p className="text-gray-600 mb-4 text-sm leading-relaxed">
-                {material.usageInstructions}
+                {material.usageInstructions || "No usage instructions available."}
               </p>
               <div className="flex justify-end">
                 <button

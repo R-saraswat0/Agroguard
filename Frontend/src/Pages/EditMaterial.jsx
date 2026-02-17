@@ -3,10 +3,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import API_BASE_URL from '../config/api';
 import {
-  FaEdit,
-  FaBox,
   FaDollarSign,
-  FaPhone,
   FaTint,
   FaUser,
   FaBook,
@@ -41,20 +38,28 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
   const [categoryOptions] = useState(["Fertilizer", "Pesticide", "Herbicide"]);
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
     axios
       .get(`${API_BASE_URL}/materials/${id}`)
       .then((response) => {
+        if (!isMounted) return;
         setFormData(response.data);
-        setLoading(false);
       })
       .catch((error) => {
+        if (!isMounted) return;
         console.error("Error fetching material:", error);
-        setLoading(false);
         enqueueSnackbar("Error fetching material details", {
           variant: "error",
         });
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, enqueueSnackbar]);
 
   // Direct input handling without custom components
@@ -95,13 +100,14 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
 
   const handlePriceChange = (e) => {
     const value = e.target.value;
+    const numericValue = Number(value);
 
     setFormData({
       ...formData,
       pricePerUnit: value,
     });
 
-    if (value < 0) {
+    if (numericValue < 0) {
       setErrors({
         ...errors,
         pricePerUnit: "Price must be a positive number",
@@ -112,6 +118,23 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
         pricePerUnit: "",
       });
     }
+  };
+
+  const validateRequiredFields = () => {
+    const nextErrors = {};
+
+    if (!formData.materialName?.trim()) nextErrors.materialName = "Material name is required";
+    if (!formData.category) nextErrors.category = "Category is required";
+    if (!formData.unitType) nextErrors.unitType = "Unit type is required";
+    if (!formData.pricePerUnit) nextErrors.pricePerUnit = "Price is required";
+    if (!formData.supplierName?.trim()) nextErrors.supplierName = "Supplier name is required";
+    if (!formData.supplierContact?.trim()) nextErrors.supplierContact = "Supplier contact is required";
+    if (!formData.usageInstructions?.trim()) nextErrors.usageInstructions = "Usage instructions are required";
+    if (!formData.diseaseUsage?.length) nextErrors.diseaseUsage = "Select at least one usage type";
+    if (!formData.image) nextErrors.image = "Material image is required";
+
+    setErrors((prev) => ({ ...prev, ...nextErrors }));
+    return Object.keys(nextErrors).length === 0;
   };
 
   const handleSupplierContactChange = (e) => {
@@ -155,7 +178,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isFormValid()) {
+    if (!validateRequiredFields() || !isFormValid()) {
       enqueueSnackbar("Please correct the errors in the form", { variant: "error" });
       return;
     }
@@ -175,12 +198,20 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
     } catch (error) {
       console.error("Error updating material:", error);
       setLoading(false);
-      enqueueSnackbar("Error updating material", { variant: "error" });
+      const message =
+        error.response?.data?.message || "Error updating material";
+      enqueueSnackbar(message, { variant: "error" });
     }
   };
 
   if (loading) {
-    return <div className="text-center mt-8">Loading...</div>;
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="rounded-md bg-white px-6 py-4 text-gray-700 shadow-md">
+          Loading material...
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -205,7 +236,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                 <div className="p-4 rounded-lg shadow-lg">
                   <div className="flex items-center justify-center">
                     <img
-                      src={formData.image}
+                      src={formData.image || "https://via.placeholder.com/300x200?text=No+Image"}
                       alt={formData.materialName}
                       className="w-50 h-48 object-cover rounded-lg mb-4"
                     />
@@ -329,6 +360,9 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                       )}
                     </div>
                   </div>
+                  {errors.image && (
+                    <p className="mt-1 text-sm text-red-500">{errors.image}</p>
+                  )}
                 </div>
               </div>
 

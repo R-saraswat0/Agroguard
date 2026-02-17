@@ -1,10 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaTimes, FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa';
+import { FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import Spinner from './Spinner';
 
 const MaterialDetailsModal = ({ 
-  selectedMaterial, 
   materialDetails, 
   loadingDetails, 
   closeMaterialDetails, 
@@ -41,7 +40,7 @@ const MaterialDetailsModal = ({
               </button>
               <div className="h-full flex items-center justify-center p-8">
                 <img 
-                  src={materialDetails.image} 
+                  src={materialDetails.image || "https://via.placeholder.com/300x200?text=No+Image"} 
                   alt={materialDetails.materialName} 
                   className="max-h-[400px] max-w-full object-contain"
                 />
@@ -51,9 +50,11 @@ const MaterialDetailsModal = ({
             {/* Right side - Details */}
             <div className="md:w-1/2 p-8 flex flex-col">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">{materialDetails.materialName}</h2>
-              <p className="text-lg font-semibold text-gray-700 mb-6">Rs. {materialDetails.pricePerUnit.toFixed(2)}</p>
+              <p className="text-lg font-semibold text-gray-700 mb-6">
+                Rs. {Number(materialDetails.pricePerUnit || 0).toFixed(2)}
+              </p>
               
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Uasage</h3>
+              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Usage</h3>
               <p className="text-gray-600 mb-8">{materialDetails.usageInstructions || 'No description available.'}</p>
               
               <div className="flex flex-col space-y-6 mb-8">
@@ -63,7 +64,7 @@ const MaterialDetailsModal = ({
                 </div>
                 
                
-                {materialDetails.diseaseUsage && materialDetails.diseaseUsage.length > 0 && (
+                {Array.isArray(materialDetails.diseaseUsage) && materialDetails.diseaseUsage.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Recommended For</h3>
                     <div className="flex flex-wrap gap-2">

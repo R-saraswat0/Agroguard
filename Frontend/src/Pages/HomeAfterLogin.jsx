@@ -38,19 +38,30 @@ const HomeAfterLogin = () => {
     setPredictionAdvice('');
   };
 
-  const fileToBase64 = (file) =>
+  const resizeImageToBase64 = (file, maxSize = 1024, quality = 0.8) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        try {
-          const base64 = reader.result.split(',')[1];
-          resolve(base64);
-        } catch (error) {
-          reject(error);
-        }
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+          const width = Math.round(img.width * scale);
+          const height = Math.round(img.height * scale);
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl.split(',')[1]);
+        };
+        img.onerror = reject;
+        img.src = reader.result;
       };
       reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
 
   const handleSubmit = async (e) => {
@@ -59,7 +70,7 @@ const HomeAfterLogin = () => {
 
     setLoading(true);
     try {
-      const base64Image = await fileToBase64(image);
+      const base64Image = await resizeImageToBase64(image);
       const response = await axios.post(`${API_BASE_URL}/ai/scan-disease`, {
         base64Image,
         mimeType: image.type || 'image/jpeg',
@@ -74,7 +85,11 @@ const HomeAfterLogin = () => {
     } catch (error) {
       console.error('Disease scan failed:', error);
       setPrediction('Error');
-      setPredictionAdvice('Unable to analyze this image now. Please try again.');
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Unable to analyze this image now. Please try again.';
+      setPredictionAdvice(errorMessage);
     } finally {
       setLoading(false);
     }

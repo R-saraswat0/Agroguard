@@ -17,6 +17,13 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "username, email, password and fullName are required" });
     }
 
+    const blockedRoles = ["admin", "manager", "supplier"];
+    if (role && blockedRoles.includes(role)) {
+      return res
+        .status(403)
+        .json({ message: "This role cannot be self-registered. Contact an administrator." });
+    }
+
     // Check if user already exists by email or username
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -36,7 +43,7 @@ router.post("/register", async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: role || "farmer", // Default role if not provided
+      role: role || "farmer", // Prevents privileged self-registration above
       fullName,
       phoneNumber,
       location,

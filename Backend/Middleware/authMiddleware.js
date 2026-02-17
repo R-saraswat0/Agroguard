@@ -3,8 +3,8 @@ import { JWT_SECRET } from '../config.js';
 import User from '../Models/User.js';
 
 // Temporary auth bypass.
-// Set DISABLE_AUTH=false to re-enable token/role enforcement.
-const AUTH_DISABLED = process.env.DISABLE_AUTH !== 'false';
+// Set DISABLE_AUTH=true to bypass token/role enforcement.
+const AUTH_DISABLED = process.env.DISABLE_AUTH === 'true';
 
 const authenticateToken = async (req, res, next) => {
     if (AUTH_DISABLED) {

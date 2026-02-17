@@ -119,6 +119,7 @@ router.post("/scan-disease", async (req, res) => {
       },
       body: JSON.stringify({
         model: visionModel,
+        response_format: { type: "json_object" },
         messages: [
           {
             role: "system",
@@ -146,7 +147,17 @@ router.post("/scan-disease", async (req, res) => {
 
     let aiResponse = data.choices?.[0]?.message?.content?.trim() || "{}";
     aiResponse = aiResponse.replace(/```json|```/g, "").trim();
-    const parsedResponse = JSON.parse(aiResponse);
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(aiResponse);
+    } catch {
+      parsedResponse = {
+        disease_name: "Unknown",
+        confidence: "Low",
+        explanation: aiResponse || "Model returned an unexpected format.",
+        recommended_action: "Please retry with a clear close-up image of a single affected leaf."
+      };
+    }
 
     return res.json({ result: parsedResponse });
   } catch (error) {

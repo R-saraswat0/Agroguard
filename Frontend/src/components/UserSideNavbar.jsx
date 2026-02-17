@@ -113,6 +113,8 @@ const UserSideNavbar = ({ user }) => {
           className="flex items-center p-3 w-full rounded-lg text-red-500 hover:bg-red-50 transition-colors duration-200"
           onClick={() => {
             localStorage.removeItem('token');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
             navigate('/login');
           }}
         >
