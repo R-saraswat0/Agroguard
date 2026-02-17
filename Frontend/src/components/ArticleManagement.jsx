@@ -111,7 +111,7 @@ const ArticleManagement = ({ isOpen, onClose }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/articles');
+      const response = await axios.get(`${API_BASE_URL}/api/articles`);
       console.log('Fetch response:', response);
 
       if (response.data && Array.isArray(response.data)) {

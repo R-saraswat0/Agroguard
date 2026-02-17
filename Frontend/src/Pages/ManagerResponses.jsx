@@ -128,7 +128,7 @@ const ManagerResponses = () => {
         return;
       }
 
-      const res = await axios.get(`${API_BASE_URL}/farmer', {
+      const res = await axios.get(`${API_BASE_URL}/farmer`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       

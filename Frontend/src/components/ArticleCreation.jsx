@@ -135,7 +135,7 @@ const ArticleCreation = ({ isOpen, onClose }) => {
     };
   
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/articles', articleData, {
+      const response = await axios.post(`${API_BASE_URL}/api/articles`, articleData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percentCompleted);

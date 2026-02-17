@@ -9,7 +9,7 @@ import { ReportService } from '../services/reportService';
 import API_BASE_URL from '../config/api';
 
 
-const API_BASE_URL = `${API_BASE_URL}/api';
+const API_BASE_URL = `${API_BASE_URL}/api`;
 
 const roleColors = {
   'farmer': 'bg-green-100 text-green-800',

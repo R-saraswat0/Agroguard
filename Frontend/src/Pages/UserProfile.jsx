@@ -37,7 +37,7 @@ const UserProfile = () => {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/test/profile', {
+        const response = await axios.get(`${API_BASE_URL}/api/test/profile`, {
           headers: { Authorization: `Bearer ${userData.token}` }
         });
         setUserProfile(response.data);

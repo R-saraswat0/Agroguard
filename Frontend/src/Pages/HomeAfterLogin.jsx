@@ -21,7 +21,7 @@ const HomeAfterLogin = () => {
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/materials');
+        const response = await axios.get(`${API_BASE_URL}/materials`);
         setMaterials(response.data.data);
       } catch (error) {
         console.error('Error fetching materials:', error);
