@@ -138,8 +138,13 @@ function Register() {
       }, 1000);
     } catch (err) {
       // Error response handling
-      console.error("Error during registration:", err.response?.data);
-      setError(err.response?.data?.message || "Invalid input data, please try again.");
+      const serverMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        "Invalid input data, please try again.";
+      console.error("Error during registration:", serverMessage);
+      setError(serverMessage);
     } finally {
       setLoading(false);
     }

@@ -13,6 +13,10 @@ router.post("/register", async (req, res) => {
   try {
     const { username, email, password, role, fullName, phoneNumber, location } = req.body;
 
+    if (!username || !email || !password || !fullName) {
+      return res.status(400).json({ message: "username, email, password and fullName are required" });
+    }
+
     // Check if user already exists by email or username
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -40,15 +44,18 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
-     // Log the activity
-     const newActivity = new Activity({
-      type: 'user',
-      action: 'New user registered',
-      name: username,
-      userId: newUser._id
-    });
-    
-    await newActivity.save();
+    // Activity logging should not block registration success
+    try {
+      const newActivity = new Activity({
+        type: 'user',
+        action: 'New user registered',
+        name: username,
+        userId: newUser._id
+      });
+      await newActivity.save();
+    } catch (activityError) {
+      console.error("Error saving activity log:", activityError);
+    }
 
     const token = jwt.sign(
       { id: newUser._id, username: newUser.username, role: newUser.role },
@@ -65,7 +72,18 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     console.error("Error in registration:", error);
-    res.status(500).json({ message: "Server error" });
+    if (error?.code === 11000) {
+      const field = Object.keys(error.keyPattern || {})[0] || "field";
+      return res.status(400).json({ message: `${field} already in use` });
+    }
+    if (error?.name === "ValidationError") {
+      const firstError = Object.values(error.errors || {})[0];
+      return res.status(400).json({ message: firstError?.message || "Invalid input data" });
+    }
+    if (String(error?.message || "").includes("buffering timed out")) {
+      return res.status(503).json({ message: "Database unavailable. Please verify MONGODB_URL on backend deployment." });
+    }
+    res.status(500).json({ message: error?.message || "Server error" });
   }
 });
 
