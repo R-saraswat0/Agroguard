@@ -3,9 +3,9 @@ import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-import API_BASE_URL from '../config/api';
+import API_ROOT_URL from '../config/api';
 
-const API_BASE_URL = `${API_BASE_URL}/api`;
+const API_BASE_URL = `${API_ROOT_URL}/api`;
 
 // Define role colors for consistent styling across reports
 const roleColors = {

@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import UserTopNavbar from './UserTopNavbar';
 import API_BASE_URL from '../config/api';
 
-const API_BASE_URL = `${API_BASE_URL}';
-
 const ArticleView = () => {
   const [articles, setArticles] = useState([]);
   const [error, setError] = useState(null);
