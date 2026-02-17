@@ -22,7 +22,7 @@ const DeleteSubmittedForm = ({inquiryId, onClose, onDeleteSuccess}) => {
   
     setLoading(true);
     axios
-      .get(`http://localhost:5557/farmer/${inquiryId}`, {
+      .get(`${API_BASE_URL}/farmer/${inquiryId}`, {
         headers: {
           Authorization: `Bearer ${userData.token}`, // Add token to the header
         },
@@ -51,7 +51,7 @@ const DeleteSubmittedForm = ({inquiryId, onClose, onDeleteSuccess}) => {
     }
   
     axios
-      .delete(`http://localhost:5557/farmer/${inquiryId}`, {
+      .delete(`${API_BASE_URL}/farmer/${inquiryId}`, {
         headers: {
           Authorization: `Bearer ${userData.token}`, // Add the token to the header
         },

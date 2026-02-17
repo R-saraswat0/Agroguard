@@ -75,7 +75,7 @@ const handleMaterialUpdate = (updatedMaterial) => {
     if (materialToDelete) {
       try {
         await axios.delete(
-          `http://localhost:5557/materials/${materialToDelete}`
+          `${API_BASE_URL}/materials/${materialToDelete}`
         );
         setMaterials(
           materials.filter((material) => material._id !== materialToDelete)

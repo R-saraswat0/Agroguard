@@ -59,7 +59,7 @@ const ManagerDashboard = () => {
   const updateStatus = async (id, status) => {
     try {
       await axios.put(
-        `http://localhost:5557/manager/form/${id}/status`,
+        `${API_BASE_URL}/manager/form/${id}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -73,7 +73,7 @@ const ManagerDashboard = () => {
     if (!reply.trim()) return;
     try {
       await axios.post(
-        `http://localhost:5557/manager/form/${id}/reply`,
+        `${API_BASE_URL}/manager/form/${id}/reply`,
         { reply },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -87,7 +87,7 @@ const ManagerDashboard = () => {
 
   const deleteReply = async (id) => {
     try {
-      await axios.delete(`http://localhost:5557/manager/form/${id}/reply`, {
+      await axios.delete(`${API_BASE_URL}/manager/form/${id}/reply`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchForms();

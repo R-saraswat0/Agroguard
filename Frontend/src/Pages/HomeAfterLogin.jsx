@@ -5,6 +5,8 @@ import axios from 'axios';
 import LogingNavBar from '../components/LogingNavBar';
 import API_BASE_URL from '../config/api';
 
+const DISEASE_API_URL = import.meta.env.VITE_DISEASE_API_URL || 'http://localhost:5000';
+
 const HomeAfterLogin = () => {
   const scanRef = useRef(null);
   const [showScanModal, setShowScanModal] = useState(false);
@@ -46,7 +48,7 @@ const HomeAfterLogin = () => {
       formData.append('file', image);
       try {
         const response = await axios.post(
-          'http://localhost:5000/predict',
+          `${DISEASE_API_URL}/predict`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );

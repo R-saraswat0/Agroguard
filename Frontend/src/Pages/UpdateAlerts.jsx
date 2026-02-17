@@ -56,7 +56,7 @@ const UpdateAlerts = () => {
     if (!window.confirm("Are you sure you want to delete this alert?")) return;
 
     try {
-      await axios.delete(`http://localhost:5557/alerts/${id}`, {
+      await axios.delete(`${API_BASE_URL}/alerts/${id}`, {
         headers: { Authorization: `Bearer ${userData.token}` },
       });
       enqueueSnackbar("Alert deleted", { variant: "success" });
@@ -81,7 +81,7 @@ const UpdateAlerts = () => {
     if (!userData?.token) return;
 
     try {
-      await axios.put(`http://localhost:5557/alerts/${id}`, editedAlert, {
+      await axios.put(`${API_BASE_URL}/alerts/${id}`, editedAlert, {
         headers: { Authorization: `Bearer ${userData.token}` },
       });
       enqueueSnackbar("Alert updated successfully", { variant: "success" });

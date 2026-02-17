@@ -41,7 +41,7 @@ export const UpdateSubmittedForm = ({ inquiryId, onClose, onUpdateSuccess }) => 
 
     setLoading(true);
     axios
-      .get(`http://localhost:5557/farmer/${inquiryId}`, {
+      .get(`${API_BASE_URL}/farmer/${inquiryId}`, {
         headers: {
           Authorization: `Bearer ${userData.token}`,
         },
@@ -104,7 +104,7 @@ export const UpdateSubmittedForm = ({ inquiryId, onClose, onUpdateSuccess }) => 
 
     setLoading(true);
     axios
-      .put(`http://localhost:5557/farmer/${inquiryId}`, data, {
+      .put(`${API_BASE_URL}/farmer/${inquiryId}`, data, {
         headers: {
           Authorization: `Bearer ${userData.token}`,
         },

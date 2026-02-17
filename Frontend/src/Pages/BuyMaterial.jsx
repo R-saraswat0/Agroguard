@@ -62,7 +62,7 @@ const BuyMaterial = () => {
     setSelectedMaterial(materialId);
 
     axios
-      .get(`http://localhost:5557/materials/${materialId}`)
+      .get(`${API_BASE_URL}/materials/${materialId}`)
       .then((response) => {
         setMaterialDetails(response.data);
         setLoadingDetails(false);

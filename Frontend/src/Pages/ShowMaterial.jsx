@@ -32,7 +32,7 @@ const ShowMaterial = ({ id, onClose }) => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5557/materials/${id}`)
+      .get(`${API_BASE_URL}/materials/${id}`)
       .then((response) => {
         setMaterial(response.data);
         setLoading(false);

@@ -43,7 +43,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5557/materials/${id}`)
+      .get(`${API_BASE_URL}/materials/${id}`)
       .then((response) => {
         setFormData(response.data);
         setLoading(false);
@@ -162,7 +162,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
     setLoading(true);
 
     try {
-      const response = await axios.put(`http://localhost:5557/materials/${id}`, formData);
+      const response = await axios.put(`${API_BASE_URL}/materials/${id}`, formData);
       setLoading(false);
       enqueueSnackbar("Material updated successfully", { variant: "success" });
       

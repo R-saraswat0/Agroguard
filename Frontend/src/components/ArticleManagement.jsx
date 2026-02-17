@@ -147,7 +147,7 @@ const ArticleManagement = ({ isOpen, onClose }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5557/api/articles/${id}`);
+      const response = await axios.delete(`${API_BASE_URL}/api/articles/${id}`);
       console.log('Delete response:', response);
   
       if (response.status === 200) {
@@ -170,7 +170,7 @@ const ArticleManagement = ({ isOpen, onClose }) => {
   
   const handleSave = async () => {
     try {
-      const response = await axios.put(`http://localhost:5557/api/articles/${editingArticle._id}`, {
+      const response = await axios.put(`${API_BASE_URL}/api/articles/${editingArticle._id}`, {
         title: editingArticle.title,
         content: editor.getHTML()
       });
