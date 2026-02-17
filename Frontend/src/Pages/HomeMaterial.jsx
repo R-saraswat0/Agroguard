@@ -27,7 +27,7 @@ const HomeMaterial = () => {
   const fetchMaterials = () => {
     setLoading(true);
     axios
-      .get(`${API_BASE_URL}/materials")
+      .get(`${API_BASE_URL}/materials`)
       .then((response) => {
         setMaterials(response.data.data);
         setLoading(false);

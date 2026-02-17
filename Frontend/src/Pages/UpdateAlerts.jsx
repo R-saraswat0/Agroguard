@@ -28,7 +28,7 @@ const UpdateAlerts = () => {
 
     setLoading(true);
     try {
-      const res = await axios.get(`${API_BASE_URL}/alerts", {
+      const res = await axios.get(`${API_BASE_URL}/alerts`, {
         headers: { Authorization: `Bearer ${userData.token}` },
       });
 

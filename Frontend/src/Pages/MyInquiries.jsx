@@ -63,7 +63,7 @@ const MyInquiries = () => {
         throw new Error("No user data found");
       }
 
-      const response = await axios.get(`${API_BASE_URL}/farmer", {
+      const response = await axios.get(`${API_BASE_URL}/farmer`, {
         headers: {
           Authorization: `Bearer ${userData.token}`,
         },

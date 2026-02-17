@@ -25,12 +25,12 @@ const MyInquiriez = () => {
       }
 
       if (showAlerts) {
-        const res = await axios.get(`${API_BASE_URL}/alerts", {
+        const res = await axios.get(`${API_BASE_URL}/alerts`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAlerts(res.data);
       } else {
-        const res = await axios.get(`${API_BASE_URL}/farmer", {
+        const res = await axios.get(`${API_BASE_URL}/farmer`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setInquiries(res.data.data || []);

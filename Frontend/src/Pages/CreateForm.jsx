@@ -72,7 +72,7 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
 
     // Send POST request with Authorization header
     axios
-      .post(`${API_BASE_URL}/farmer", data, {
+      .post(`${API_BASE_URL}/farmer`, data, {
         headers: {
           Authorization: `Bearer ${userData.token}`, // Include the token in the headers
         },

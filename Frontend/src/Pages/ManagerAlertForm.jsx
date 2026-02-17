@@ -114,7 +114,7 @@ const ManagerAlertForm = () => {
 
     setLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/alerts", data, {
+      await axios.post(`${API_BASE_URL}/alerts`, data, {
         headers: { Authorization: `Bearer ${userData.token}` },
       });
       enqueueSnackbar("Alert created successfully!", { variant: "success" });

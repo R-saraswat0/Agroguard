@@ -19,7 +19,7 @@ const ReportsPage = () => {
           return;
         }
 
-        const response = await axios.get(`${API_BASE_URL}/manager/reports", {
+        const response = await axios.get(`${API_BASE_URL}/manager/reports`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

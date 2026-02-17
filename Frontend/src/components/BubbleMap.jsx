@@ -46,7 +46,7 @@ const BubbleMap = () => {
         const token = userData?.token;
         if (!token) return;
 
-        const response = await axios.get(`${API_BASE_URL}/farmer/all", {
+        const response = await axios.get(`${API_BASE_URL}/farmer/all`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -21,7 +21,7 @@ const ReportsTab = () => {
 
     const fetchStats = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/manager/reports", {
+        const res = await axios.get(`${API_BASE_URL}/manager/reports`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStats(res.data);
@@ -42,8 +42,8 @@ const ReportsTab = () => {
       try {
         const endpoint =
           viewMode === "monthly"
-            ? `${API_BASE_URL}/manager/reports/monthly"
-            : `${API_BASE_URL}/manager/forms";
+            ? `${API_BASE_URL}/manager/reports/monthly`
+            : `${API_BASE_URL}/manager/forms`;
 
         const res = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },

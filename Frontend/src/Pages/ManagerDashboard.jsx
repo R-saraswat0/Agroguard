@@ -44,7 +44,7 @@ const ManagerDashboard = () => {
 
   const fetchForms = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/manager/forms", {
+      const response = await axios.get(`${API_BASE_URL}/manager/forms`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { status: statusFilter, search: searchQuery, date: searchDate },
       });

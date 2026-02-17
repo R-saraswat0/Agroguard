@@ -143,7 +143,7 @@ const CreateMaterial = () => {
     };
     setLoading(true);
     axios
-      .post(`${API_BASE_URL}/materials", data)
+      .post(`${API_BASE_URL}/materials`, data)
       .then(() => {
         setLoading(false);
         enqueueSnackbar("Material Created successfully", {

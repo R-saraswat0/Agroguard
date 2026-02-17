@@ -234,7 +234,7 @@ const AiTreatmentForm = () => {
     
     setLoading(true);
     try {
-      const response = await axios.post(`${API_BASE_URL}/ai/treatment", formData);
+      const response = await axios.post(`${API_BASE_URL}/ai/treatment`, formData);
       setTreatment(response.data.treatment);
       enqueueSnackbar("Treatment recommendation generated successfully!", { variant: "success" });
       setLoading(false);
